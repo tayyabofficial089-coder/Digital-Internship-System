@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Registration - Digital Internship</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 35px;
+            max-width: 850px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .register-card .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .register-card .logo h2 {
+            color: #4A6CF7;
+            font-weight: 700;
+        }
+        
+        .register-card .logo p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .register-card .form-control, .register-card .form-select {
+            border-radius: 10px;
+            padding: 8px 15px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            height: 42px;
+            background: #fafbfc;
+            font-size: 14px;
+        }
+        
+        .register-card .form-control:focus, .register-card .form-select:focus {
+            border-color: #4A6CF7;
+            box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.25);
+            background: #ffffff;
+        }
+        
+        .register-card .form-label {
+            font-weight: 600;
+            color: #343a40;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        
+        #registerBtn {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            color: white;
+            width: 250px;
+            display: block;
+            margin: 15px auto 0 auto;
+        }
+        
+        #registerBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(74, 108, 247, 0.4);
+        }
+        
+        #registerBtn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .register-card .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .register-card .login-link a {
+            color: #4A6CF7;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .register-card .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .register-card .home-link {
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .register-card .home-link a {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .register-card .home-link a:hover {
+            color: #4A6CF7;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        /* ===== PASSWORD FIELD ===== */
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .password-wrapper .form-control {
+            padding-right: 40px;
+        }
+        
+        .password-wrapper .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #adb5bd;
+            background: transparent;
+            border: none;
+            padding: 5px 8px;
+            font-size: 16px;
+            z-index: 5;
+            line-height: 1;
+        }
+        
+        .password-wrapper .password-toggle:hover {
+            color: #4A6CF7;
+        }
+        
+        /* ===== INPUT WITH ICON ===== */
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon .icon-left, .password-wrapper .icon-left {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            z-index: 2;
+            font-size: 14px;
+        }
+        
+        .input-icon .form-control, .input-icon .form-select, .password-wrapper .form-control {
+            padding-left: 40px;
+        }
+
+        /* ===== TEXTAREA ===== */
+        .input-icon textarea.form-control {
+            height: auto;
+            min-height: 60px;
+            padding-top: 12px;
+        }
+        
+        .input-icon .icon-top {
+            position: absolute;
+            left: 14px;
+            top: 18px;
+            color: #adb5bd;
+            z-index: 2;
+            font-size: 15px;
+        }
+
+        /* ===== COMPANY SIZE ===== */
+        .company-size-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .company-size-group .form-check {
+            margin-right: 10px;
+        }
+        
+        .company-size-group .form-check-input:checked {
+            background-color: #4A6CF7;
+            border-color: #4A6CF7;
+        }
+        
+        .company-size-group .form-check-label {
+            font-size: 13px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 576px) {
+            .register-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <div class="logo">
+            <h2><i class="fas fa-building"></i> Digital Internship</h2>
+            <p>Company Registration</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <form id="registerForm" onsubmit="return registerCompany(event)">
+            <div class="row">
+                <!-- ===== COMPANY NAME ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-building me-2"></i>Company Name *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-building icon-left"></i>
+                        <input type="text" class="form-control" id="companyName" placeholder="Enter company name" required>
+                    </div>
+                </div>
+
+                <!-- ===== COMPANY SIZE ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-users me-2"></i>Company Size *</label>
+                    <div class="company-size-group">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="companySize" id="sizeSmall" value="1-10">
+                            <label class="form-check-label" for="sizeSmall">1-10</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="companySize" id="sizeMedium" value="11-50">
+                            <label class="form-check-label" for="sizeMedium">11-50</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="companySize" id="sizeLarge" value="51-200">
+                            <label class="form-check-label" for="sizeLarge">51-200</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="companySize" id="sizeEnterprise" value="200+">
+                            <label class="form-check-label" for="sizeEnterprise">200+</label>
+                        </div>
+                    </div>
+                    <small class="text-muted d-block mt-0">Select the number of employees</small>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- ===== HR NAME ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-user-tie me-2"></i>HR Name *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user icon-left"></i>
+                        <input type="text" class="form-control" id="hrName" placeholder="Enter HR name" required>
+                    </div>
+                </div>
+
+                <!-- ===== EMAIL ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-envelope me-2"></i>Email Address *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope icon-left"></i>
+                        <input type="email" class="form-control" id="email" placeholder="Enter email address" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- ===== PASSWORD ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-lock me-2"></i>Password *</label>
+                    <div class="password-wrapper">
+                        <i class="fas fa-lock icon-left"></i>
+                        <input type="password" class="form-control" id="password" placeholder="Enter password" required minlength="8">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password', 'passIcon')" tabindex="-1">
+                            <i class="fas fa-eye" id="passIcon"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-1">Minimum 8 characters</small>
+                </div>
+
+                <!-- ===== CONFIRM PASSWORD ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-check-circle me-2"></i>Confirm Password *</label>
+                    <div class="password-wrapper">
+                        <i class="fas fa-lock icon-left"></i>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', 'confirmIcon')" tabindex="-1">
+                            <i class="fas fa-eye" id="confirmIcon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- ===== PHONE ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-phone me-2"></i>Phone Number *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-phone icon-left"></i>
+                        <input type="text" class="form-control" id="phone" placeholder="Enter phone number" required>
+                    </div>
+                </div>
+
+                <!-- ===== INDUSTRY ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-industry me-2"></i>Industry</label>
+                    <div class="input-icon">
+                        <i class="fas fa-industry icon-left"></i>
+                        <select class="form-select" id="industry">
+                            <option value="">Select Industry (Optional)</option>
+                            <option value="IT">Information Technology</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- ===== ADDRESS ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-map-marker-alt me-2"></i>Address</label>
+                    <div class="input-icon">
+                        <i class="fas fa-map-marker-alt icon-left" style="top: 20px;"></i>
+                        <textarea class="form-control" id="address" rows="1" placeholder="Company address"></textarea>
+                    </div>
+                </div>
+
+                <!-- ===== WEBSITE ===== -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label"><i class="fas fa-globe me-2"></i>Website</label>
+                    <div class="input-icon">
+                        <i class="fas fa-globe icon-left"></i>
+                        <input type="url" class="form-control" id="website" placeholder="https://www.company.com">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SUBMIT ===== -->
+            <button type="submit" class="btn btn-primary" id="registerBtn">
+                <i class="fas fa-building me-2"></i>Register Company
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="../login.html">Login</a>
+        </div>
+        <div class="home-link">
+            <a href="../index.html"><i class="fas fa-home"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash text-primary';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `${message} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirm = this.value;
+
+            if (confirm.length > 0 && password !== confirm) {
+                this.style.borderColor = '#dc3545';
+            } else if (confirm.length > 0 && password === confirm) {
+                this.style.borderColor = '#28a745';
+            } else {
+                this.style.borderColor = '#e9ecef';
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            const confirm = document.getElementById('confirmPassword');
+            if (confirm.value.length > 0) {
+                if (this.value === confirm.value) {
+                    confirm.style.borderColor = '#28a745';
+                } else {
+                    confirm.style.borderColor = '#dc3545';
+                }
+            }
+        });
+
+        async function registerCompany(event) {
+            event.preventDefault();
+
+            const companyName = document.getElementById('companyName').value.trim();
+            const hrName = document.getElementById('hrName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const phone = document.getElementById('phone').value.trim();
+            const industry = document.getElementById('industry').value;
+            const address = document.getElementById('address').value.trim();
+            const website = document.getElementById('website').value.trim();
+            
+            const companySize = document.querySelector('input[name="companySize"]:checked')?.value;
+
+            if (!companySize) {
+                showAlert('Please select company size', 'warning');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'warning');
+                document.getElementById('confirmPassword').focus();
+                return false;
+            }
+
+            const btn = document.getElementById('registerBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registering...';
+
+            try {
+                const response = await fetch(`${API_URL}/auth/register/company`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        companyName,
+                        name: hrName,
+                        email,
+                        password,
+                        phone,
+                        companySize,
+                        industry,
+                        address,
+                        website
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Company registered successfully! Redirecting to login...', 'success');
+                    document.getElementById('registerForm').reset();
+                    setTimeout(() => { window.location.href = '../login.html'; }, 3000);
+                } else {
+                    const errorMsg = result.errors ? result.errors.map(e => e.msg).join(', ') : result.message || 'Registration failed';
+                    showAlert(errorMsg, 'danger');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showAlert('Server error. Please try again.', 'danger');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-building me-2"></i>Register Company';
+            return false;
+        }
+    </script>
+</body>
+</html>
