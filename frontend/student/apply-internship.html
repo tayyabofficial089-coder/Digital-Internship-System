@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Internship</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background: #f0f2f5;
+        }
+        
+        .apply-container {
+            max-width: 750px;
+            margin: 40px auto;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            color: white;
+            padding: 25px 30px;
+            border: none;
+        }
+        
+        .card-header h3 {
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .card-header p {
+            opacity: 0.85;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .internship-detail-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #4A6CF7;
+        }
+        
+        .internship-detail-box .title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        
+        .internship-detail-box .company {
+            color: #4A6CF7;
+            font-weight: 600;
+        }
+        
+        .internship-detail-box .detail-item {
+            font-size: 14px;
+            color: #6c757d;
+            margin-right: 18px;
+        }
+        
+        .internship-detail-box .detail-item i {
+            margin-right: 4px;
+            color: #4A6CF7;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        
+        .form-group label .required {
+            color: #dc3545;
+            margin-left: 2px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 11px 15px;
+            height: 48px;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #4A6CF7;
+            box-shadow: 0 0 0 4px rgba(74, 108, 247, 0.12);
+            background: white;
+        }
+        
+        extarea.form-control {
+            height: auto;
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+        
+        .file-upload-wrapper:hover {
+            border-color: #4A6CF7;
+            background: #f0f4ff;
+        }
+        
+        .file-upload-wrapper.has-file {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+        
+        .file-upload-wrapper i {
+            font-size: 40px;
+            color: #adb5bd;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .file-upload-wrapper .file-text {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .file-upload-wrapper .file-name {
+            color: #28a745;
+            font-weight: 600;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 35px rgba(74, 108, 247, 0.4);
+            color: white;
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-submit i {
+            margin-right: 8px;
+        }
+        
+        .btn-back {
+            border: 2px solid #e9ecef;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #6c757d;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            border-color: #4A6CF7;
+            color: #4A6CF7;
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+        
+        .row-custom {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .row-custom .form-group {
+            flex: 1;
+        }
+        
+        .note-box {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .note-box i {
+            color: #856404;
+            margin-right: 8px;
+        }
+        
+        .note-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #856404;
+        }@media (max-width: 576px) {
+            .row-custom { flex-direction: column;
+            gap: 0;
+        }
+        
+        .apply-container {
+            margin: 20px 15px;
+        }
+        
+        .card-body {
+            padding: 20px;
+        } }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg" style="background: linear-gradient(135deg, #4A6CF7, #6a8cfa); box-shadow: 0 4px 20px rgba(74,108,247,0.3);">
+        <div class="container">
+            <a class="navbar-brand text-white fw-bold" href="dashboard.html">
+                <i class="fas fa-graduation-cap"></i> Student Dashboard
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="text-white me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container apply-container">
+        <div id="alertContainer"></div>
+
+        <div class="card">
+            <!-- ===== HEADER ===== -->
+            <div class="card-header">
+                <h3><i class="fas fa-paper-plane me-2"></i>Apply for Internship</h3>
+                <p>Please fill in your details and upload your CV to apply</p>
+            </div>
+
+            <!-- ===== BODY ===== -->
+            <div class="card-body">
+
+                <!-- ===== NOTE ===== -->
+                <div class="note-box">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Please fill in your correct details. These will be used for your application.</p>
+                </div>
+
+                <!-- ===== INTERNSHIP DETAILS ===== -->
+                <div class="internship-detail-box" id="internshipDetails">
+                    <div class="title" id="internshipTitle">Loading...</div>
+                    <div class="company" id="companyName"><i class="fas fa-building"></i> Loading...</div>
+                    <div class="mt-2">
+                        <span class="detail-item"><i class="fas fa-map-marker-alt"></i> <span id="internshipLocation">-</span></span>
+                        <span class="detail-item"><i class="fas fa-clock"></i> <span id="internshipDuration">-</span></span>
+                        <span class="detail-item"><i class="fas fa-money-bill"></i> <span id="internshipStipend">-</span></span>
+                        <span class="detail-item"><i class="fas fa-calendar-alt"></i> Deadline: <span id="internshipDeadline">-</span></span>
+                    </div>
+                    <input type="hidden" id="internshipId">
+                </div>
+
+                <!-- ===== FORM ===== -->
+                <form id="applyForm" onsubmit="return submitApplication(event)">
+
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label>Full Name <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label>Email Address <span class="required">*</span></label>
+                        <input type="email" class="form-control" id="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <!-- Phone + Roll Number -->
+                    <div class="row-custom">
+                        <div class="form-group">
+                            <label>Phone Number <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="phone" placeholder="+92 300 1234567" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Roll Number <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="rollNumber" placeholder="2022-KS-389" required>
+                        </div>
+                    </div>
+
+                    <!-- Education + CGPA -->
+                    <div class="row-custom">
+                        <div class="form-group">
+                            <label>Education Level <span class="required">*</span></label>
+                            <select class="form-select" id="educationLevel" required>
+                                <option value="">Select Education</option>
+                                <option value="High School">High School</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Bachelor">Bachelor</option>
+                                <option value="Master">Master</option>
+                                <option value="PhD">PhD</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>CGPA <span class="required">*</span></label>
+                            <input type="number" class="form-control" id="cgpa" placeholder="3.50" step="0.01" min="0" max="4" required>
+                        </div>
+                    </div>
+
+                    <!-- Department + Semester -->
+                    <div class="row-custom">
+                        <div class="form-group">
+                            <label>Department <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="department" placeholder="e.g., Computer Science" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Semester <span class="required">*</span></label>
+                            <select class="form-select" id="semester" required>
+                                <option value="">Select Semester</option>
+                                <option value="1st">1st Semester</option>
+                                <option value="2nd">2nd Semester</option>
+                                <option value="3rd">3rd Semester</option>
+                                <option value="4th">4th Semester</option>
+                                <option value="5th">5th Semester</option>
+                                <option value="6th">6th Semester</option>
+                                <option value="7th">7th Semester</option>
+                                <option value="8th">8th Semester</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="form-group">
+                        <label>Skills <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="skills" placeholder="e.g., HTML, CSS, JavaScript, React" required>
+                        <small class="text-muted">Separate skills with commas</small>
+                    </div>
+
+                    <!-- Cover Letter -->
+                    <div class="form-group">
+                        <label>Cover Letter <span class="required">*</span></label>
+                        <textarea class="form-control" id="coverLetter" placeholder="Why do you want to apply for this internship?" required></textarea>
+                    </div>
+
+                    <!-- CV Upload -->
+                    <div class="form-group">
+                        <label>Upload CV <span class="required">*</span></label>
+                        <div class="file-upload-wrapper" id="fileUploadWrapper">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div class="file-text">Click or drag to upload your CV</div>
+                            <div class="file-name" id="fileName">✅ <span id="fileDisplayName"></span></div>
+                            <input type="file" id="cvFile" accept=".pdf,.doc,.docx" required onchange="handleFileUpload(event)">
+                        </div>
+                        <small class="text-muted">Supported: PDF, DOC, DOCX (Max: 5MB)</small>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Application
+                    </button>
+
+                    <div class="text-center mt-3">
+                        <a href="internships.html" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Back to Internships
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+
+        // ==================== CHECK AUTH ====================
+        if (!token) {
+            window.location.href = '../login.html';
+        }
+
+        // ==================== LOGOUT ====================
+        document.getElementById('logoutBtn')?.addEventListener('click', function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../index.html';
+        });
+
+        // ==================== USER DATA ====================
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('userName').textContent = user.name || 'Student';
+
+        // ==================== GET INTERNSHIP DATA ====================
+        function getInternshipData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const internshipId = urlParams.get('id');
+
+            if (!internshipId) {
+                showAlert('No internship selected. Please go back and select an internship.', 'warning');
+                return;
+            }
+
+            document.getElementById('internshipId').value = internshipId;
+            fetchInternshipDetails(internshipId);
+        }
+
+        async function fetchInternshipDetails(id) {
+            try {
+                const response = await fetch(`${API_URL}/student/internships`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const internship = result.data.find(i => i.id == id);
+                    if (internship) {
+                        document.getElementById('internshipTitle').textContent = internship.title;
+                        document.getElementById('companyName').innerHTML = `<i class="fas fa-building"></i> ${internship.companyName}`;
+                        document.getElementById('internshipLocation').textContent = internship.location || 'Remote';
+                        document.getElementById('internshipDuration').textContent = internship.duration || 'Not specified';
+                        document.getElementById('internshipStipend').textContent = internship.stipend || 'Unpaid';
+                        document.getElementById('internshipDeadline').textContent = new Date(internship.deadline).toLocaleDateString();
+                    } else {
+                        showAlert('Internship not found', 'danger');
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching internship:', error);
+                showAlert('Failed to load internship details', 'danger');
+            }
+        }
+
+        // ==================== FILE UPLOAD HANDLER ====================
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            const wrapper = document.getElementById('fileUploadWrapper');
+            const fileNameDisplay = document.getElementById('fileDisplayName');
+            const fileNameDiv = document.getElementById('fileName');
+
+            if (file) {
+                const maxSize = 5 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    showAlert('File size must be less than 5MB', 'warning');
+                    event.target.value = '';
+                    wrapper.classList.remove('has-file');
+                    fileNameDiv.style.display = 'none';
+                    return;
+                }
+
+                const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!allowedTypes.includes(file.type)) {
+                    showAlert('Please upload PDF, DOC, or DOCX file', 'warning');
+                    event.target.value = '';
+                    wrapper.classList.remove('has-file');
+                    fileNameDiv.style.display = 'none';
+                    return;
+                }
+
+                fileNameDisplay.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+                fileNameDiv.style.display = 'block';
+                wrapper.classList.add('has-file');
+                wrapper.querySelector('.file-text').style.display = 'none';
+            } else {
+                wrapper.classList.remove('has-file');
+                fileNameDiv.style.display = 'none';
+                wrapper.querySelector('.file-text').style.display = 'block';
+            }
+        }
+
+        // ==================== SHOW ALERT ====================
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+            `;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // ==================== SUBMIT APPLICATION ====================
+        async function submitApplication(event) {
+            event.preventDefault();
+
+            const internshipId = document.getElementById('internshipId').value;
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const rollNumber = document.getElementById('rollNumber').value.trim();
+            const educationLevel = document.getElementById('educationLevel').value;
+            const cgpa = document.getElementById('cgpa').value;
+            const department = document.getElementById('department').value.trim();
+            const semester = document.getElementById('semester').value;
+            const skills = document.getElementById('skills').value.trim();
+            const coverLetter = document.getElementById('coverLetter').value.trim();
+            const cvFile = document.getElementById('cvFile').files[0];
+
+            // ==================== VALIDATION ====================
+            if (!fullName) { showAlert('Please enter your full name', 'warning'); document.getElementById('fullName').focus(); return false; }
+            if (!email || !email.includes('@')) { showAlert('Please enter a valid email', 'warning'); document.getElementById('email').focus(); return false; }
+            if (!phone) { showAlert('Please enter phone number', 'warning'); document.getElementById('phone').focus(); return false; }
+            if (!rollNumber) { showAlert('Please enter roll number', 'warning'); document.getElementById('rollNumber').focus(); return false; }
+            if (!educationLevel) { showAlert('Please select education level', 'warning'); document.getElementById('educationLevel').focus(); return false; }
+            if (!cgpa || cgpa < 0 || cgpa > 4) { showAlert('Please enter a valid CGPA (0-4)', 'warning'); document.getElementById('cgpa').focus(); return false; }
+            if (!department) { showAlert('Please enter department', 'warning'); document.getElementById('department').focus(); return false; }
+            if (!semester) { showAlert('Please select semester', 'warning'); document.getElementById('semester').focus(); return false; }
+            if (!skills) { showAlert('Please enter your skills', 'warning'); document.getElementById('skills').focus(); return false; }
+            if (!coverLetter) { showAlert('Please write a cover letter', 'warning'); document.getElementById('coverLetter').focus(); return false; }
+            if (!cvFile) { showAlert('Please upload your CV', 'warning'); return false; }
+
+            // ==================== DISABLE BUTTON ====================
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Submitting...';
+
+            // ==================== CREATE FORM DATA ====================
+            const formData = new FormData();
+            formData.append('internshipId', internshipId);
+            formData.append('fullName', fullName);
+            formData.append('email', email);
+            formData.append('phone', phone);
+            formData.append('rollNumber', rollNumber);
+            formData.append('educationLevel', educationLevel);
+            formData.append('cgpa', cgpa);
+            formData.append('department', department);
+            formData.append('semester', semester);
+            formData.append('skills', skills);
+            formData.append('coverLetter', coverLetter);
+            formData.append('cv', cvFile);
+
+            // ==================== API CALL ====================
+            try {
+                const response = await fetch(`${API_URL}/student/apply/${internshipId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('✅ Application submitted successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'applications.html';
+                    }, 2000);
+                } else {
+                    showAlert('❌ ' + (result.message || 'Failed to submit application'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                showAlert('❌ Server error. Please try again.', 'danger');
+            }
+
+            // ==================== ENABLE BUTTON ====================
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
+
+            return false;
+        }
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            getInternshipData();
+        });
+    </script>
+
+</body>
+</html>
