@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Applications</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background: #f0f2f5;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            box-shadow: 0 4px 20px rgba(74,108,247,0.3);
+            padding: 12px 0;
+        }
+        
+        .navbar-custom .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+        }
+        
+        .navbar-custom .navbar-brand i {
+            margin-right: 8px;
+        }
+        
+        .text-white-custom {
+            color: white !important;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 18px 25px;
+            font-weight: 600;
+        }
+        
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .badge-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-shortlisted {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .badge-selected {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .btn-action {
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin: 2px;
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 14px;
+            width: 120px;
+            display: inline-block;
+        }
+        
+        .detail-value {
+            color: #495057;
+            font-size: 14px;
+        }
+        
+        .detail-row {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: #d1d5db;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h5 {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+        
+        .empty-state p {
+            color: #6c757d;
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-bar select, .filter-bar input {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 8px 15px;
+            height: 42px;
+            background: white;
+        }
+        
+        .filter-bar select:focus, .filter-bar input:focus {
+            border-color: #4A6CF7;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(74,108,247,0.12);
+        }
+        @media (max-width: 576px) {
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+        
+        .cv-link {
+            color: #4A6CF7;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .cv-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-building"></i> Company Dashboard
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="text-white-custom me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container mt-4">
+        <div id="alertContainer"></div>
+
+        <!-- ===== HEADER ===== -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+            <div>
+                <h2><i class="fas fa-users text-primary"></i> Student Applications</h2>
+                <p class="text-muted">Review and manage student applications</p>
+            </div>
+            <a href="dashboard.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <!-- ===== FILTERS ===== -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="filter-bar">
+                    <select id="filterInternship" class="form-select" style="width:200px;">
+                        <option value="">All Internships</option>
+                    </select>
+                    <select id="filterStatus" class="form-select" style="width:150px;">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="shortlisted">Shortlisted</option>
+                        <option value="selected">Selected</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== APPLICATIONS LIST ===== -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-list me-2"></i> Applications
+            </div>
+            <div class="card-body">
+                <div id="applicationsList">
+                    <div class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+                        <p class="mt-2 text-muted">Loading applications...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== VIEW APPLICATION MODAL ==================== -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user me-2"></i>Application Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="viewModalBody">
+                    <div class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+                        <p class="mt-2">Loading details...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+
+        // ==================== CHECK AUTH ====================
+        if (!token) {
+            window.location.href = '../login.html';
+        }
+
+        // ==================== LOGOUT ====================
+        document.getElementById('logoutBtn')?.addEventListener('click', function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../index.html';
+        });
+
+        // ==================== USER DATA ====================
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('userName').textContent = user.name || 'Company HR';
+
+        // ==================== SHOW ALERT ====================
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+            `;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // ==================== LOAD INTERNSHIPS FOR FILTER ====================
+        async function loadInternshipFilter() {
+            try {
+                const response = await fetch(`${API_URL}/company/internships`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+                if (result.success) {
+                    const select = document.getElementById('filterInternship');
+                    result.data.forEach(internship => {
+                        select.innerHTML += `<option value="${internship.id}">${internship.title}</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading internships:', error);
+            }
+        }
+
+        // ==================== LOAD APPLICATIONS ====================
+        async function loadApplications() {
+            try {
+                const internshipId = document.getElementById('filterInternship').value;
+                const status = document.getElementById('filterStatus').value;
+
+                let url = `${API_URL}/company/applications`;
+                const params = new URLSearchParams();
+                if (internshipId) params.append('internshipId', internshipId);
+                if (status) params.append('status', status);
+                if (params.toString()) url += '?' + params.toString();
+
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const container = document.getElementById('applicationsList');
+
+                    if (result.data.length === 0) {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <h5>No Applications Found</h5>
+                                <p>No students have applied to your internships yet.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    let html = `
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Roll No</th>
+                                        <th>Internship</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                    result.data.forEach(app => {
+                        const statusClass = app.status === 'pending' ? 'badge-pending' :
+                                           app.status === 'shortlisted' ? 'badge-shortlisted' :
+                                           app.status === 'selected' ? 'badge-selected' : 'badge-rejected';
+
+                        html += `
+                            <tr>
+                                <td><strong>${app.studentName || 'Unknown'}</strong></td>
+                                <td>${app.studentRollNumber || 'N/A'}</td>
+                                <td>${app.internshipTitle || 'N/A'}</td>
+                                <td><span class="badge-status ${statusClass}">${(app.status || 'pending').toUpperCase()}</span></td>
+                                <td>
+                                    <button class="btn btn-info btn-action" onclick="viewApplication(${app.id})">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    ${app.status === 'pending' ? 
+                                        `<button class="btn btn-success btn-action" onclick="shortlistStudent(${app.id})">
+                                            <i class="fas fa-check"></i> Shortlist
+                                        </button>` : ''
+                                    }
+                                    ${app.status === 'shortlisted' ? 
+                                        `<button class="btn btn-primary btn-action" onclick="scheduleInterview(${app.id})">
+                                            <i class="fas fa-calendar"></i> Interview
+                                        </button>
+                                        <button class="btn btn-success btn-action" onclick="selectStudent(${app.id})">
+                                            <i class="fas fa-check-double"></i> Select
+                                        </button>` : ''
+                                    }
+                                    ${app.status === 'selected' ? 
+                                        `<button class="btn btn-warning btn-action" onclick="assignSupervisor(${app.id})">
+                                            <i class="fas fa-user-tie"></i> Assign
+                                        </button>` : ''
+                                    }
+                                    ${app.status !== 'rejected' && app.status !== 'selected' ? 
+                                        `<button class="btn btn-danger btn-action" onclick="rejectStudent(${app.id})">
+                                            <i class="fas fa-times"></i> Reject
+                                        </button>` : ''
+                                    }
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    html += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    container.innerHTML = html;
+                } else {
+                    showAlert(result.message || 'Failed to load applications', 'danger');
+                }
+            } catch (error) {
+                console.error('Error loading applications:', error);
+                showAlert('Server error. Please try again.', 'danger');
+            }
+        }
+
+        // ==================== VIEW APPLICATION DETAILS ====================
+        async function viewApplication(applicationId) {
+            const modal = new bootstrap.Modal(document.getElementById('viewModal'));
+            const body = document.getElementById('viewModalBody');
+            body.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2">Loading details...</p></div>';
+            modal.show();
+
+            try {
+                // Fetch all applications and find the specific one
+                const response = await fetch(`${API_URL}/company/applications`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const app = result.data.find(a => a.id === applicationId);
+
+                    if (app) {
+                        body.innerHTML = `
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-user"></i> Student Name</span>
+                                        <span class="detail-value">${app.studentName || 'N/A'}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-id-card"></i> Roll Number</span>
+                                        <span class="detail-value">${app.studentRollNumber || 'N/A'}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-envelope"></i> Email</span>
+                                        <span class="detail-value">${app.studentEmail || 'N/A'}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-graduation-cap"></i> CGPA</span>
+                                        <span class="detail-value">${app.studentCGPA || 'N/A'}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-briefcase"></i> Internship</span>
+                                        <span class="detail-value">${app.internshipTitle || 'N/A'}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-calendar"></i> Applied Date</span>
+                                        <span class="detail-value">${app.appliedDate ? new Date(app.appliedDate).toLocaleDateString() : 'N/A'}</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-info-circle"></i> Status</span>
+                                        <span class="detail-value"><span class="badge-status ${app.status === 'pending' ? 'badge-pending' : app.status === 'shortlisted' ? 'badge-shortlisted' : app.status === 'selected' ? 'badge-selected' : 'badge-rejected'}">${(app.status || 'pending').toUpperCase()}</span></span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-file-alt"></i> Cover Letter</span>
+                                        <span class="detail-value">${app.coverLetter || 'No cover letter provided'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="detail-row">
+                                        <span class="detail-label"><i class="fas fa-file-pdf"></i> CV</span>
+                                        <span class="detail-value">
+                                            ${app.cvPath ? 
+                                                `<a href="/${app.cvPath}" target="_blank" class="cv-link"><i class="fas fa-download"></i> Download CV</a>` : 
+                                                'No CV uploaded'
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        body.innerHTML = '<div class="alert alert-danger">Application not found</div>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching application details:', error);
+                body.innerHTML = '<div class="alert alert-danger">Failed to load application details</div>';
+            }
+        }
+
+        // ==================== SHORTLIST STUDENT ====================
+        async function shortlistStudent(applicationId) {
+            if (!confirm('Shortlist this student?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/company/shortlist/${applicationId}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('✅ Student shortlisted successfully!', 'success');
+                    loadApplications();
+                } else {
+                    showAlert('❌ ' + (result.message || 'Failed to shortlist'), 'danger');
+                }
+            } catch (error) {
+                showAlert('❌ Server error. Please try again.', 'danger');
+            }
+        }
+
+        // ==================== SCHEDULE INTERVIEW ====================
+        function scheduleInterview(applicationId) {
+            // Direct to interview page or show modal
+            window.location.href = `interview.html?id=${applicationId}`;
+        }
+
+        // ==================== ASSIGN SUPERVISOR ====================
+        function assignSupervisor(applicationId) {
+            window.location.href = `assign-supervisor.html?app=${applicationId}`;
+        }
+
+        // ==================== SELECT STUDENT ====================
+        async function selectStudent(applicationId) {
+            if (!confirm('Are you sure you want to select this student for the internship?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/company/select/${applicationId}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('✅ Student selected successfully! You can now assign them a supervisor.', 'success');
+                    loadApplications(); // Refresh list
+                } else {
+                    showAlert('❌ ' + (result.message || 'Failed to select student'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error selecting student:', error);
+                showAlert('❌ Server error. Please try again.', 'danger');
+            }
+        }
+
+        // ==================== REJECT STUDENT ====================
+async function rejectStudent(applicationId) {
+    if (!confirm('Are you sure you want to reject this student?')) return;
+
+    try {
+        const response = await fetch(`${API_URL}/company/reject/${applicationId}`, {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showAlert('✅ Student rejected successfully!', 'success');
+            loadApplications(); // Refresh list
+        } else {
+            showAlert('❌ ' + (result.message || 'Failed to reject student'), 'danger');
+        }
+    } catch (error) {
+        console.error('Error rejecting student:', error);
+        showAlert('❌ Server error. Please try again.', 'danger');
+    }
+}
+
+        // ==================== FILTERS ====================
+        function applyFilters() {
+            loadApplications();
+        }
+
+        function clearFilters() {
+            document.getElementById('filterInternship').value = '';
+            document.getElementById('filterStatus').value = '';
+            loadApplications();
+        }
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInternshipFilter();
+            loadApplications();
+        });
+    </script>
+
+</body>
+</html>
