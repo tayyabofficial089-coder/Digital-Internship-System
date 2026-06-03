@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Interview</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background: #f0f2f5;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 18px 25px;
+            font-weight: 600;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 11px 15px;
+            height: 48px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #4A6CF7;
+            box-shadow: 0 0 0 4px rgba(74,108,247,0.12);
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74,108,247,0.4);
+            color: white;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            box-shadow: 0 4px 20px rgba(74,108,247,0.3);
+            padding: 12px 0;
+        }
+        
+        .navbar-custom .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+        }
+        
+        .text-white-custom {
+            color: white !important;
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+        
+        .student-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px 20px;
+            border-left: 4px solid #4A6CF7;
+        }
+        
+        .student-info .label {
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .student-info .value {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-building"></i> Company Dashboard
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="text-white-custom me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container mt-4">
+        <div id="alertContainer"></div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-calendar-check me-2"></i> Schedule Interview
+                    </div>
+                    <div class="card-body">
+
+                        <!-- ===== STUDENT INFO ===== -->
+                        <div class="student-info mb-4" id="studentInfo">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="label">Student Name</div>
+                                    <div class="value" id="studentName">Loading...</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="label">Roll Number</div>
+                                    <div class="value" id="studentRollNo">Loading...</div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="label">Internship</div>
+                                    <div class="value" id="internshipTitle">Loading...</div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="label">Status</div>
+                                    <div class="value"><span class="badge badge-shortlisted" id="studentStatus">SHORTLISTED</span></div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="applicationId">
+                        </div>
+
+                        <!-- ===== INTERVIEW FORM ===== -->
+                        <form id="interviewForm" onsubmit="return scheduleInterview(event)">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="fw-bold">Interview Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="interviewDate" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="fw-bold">Interview Time <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" id="interviewTime" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold">Interview Mode <span class="text-danger">*</span></label>
+                                <select class="form-select" id="interviewMode" onchange="toggleMeetingLink()" required>
+                                    <option value="online">Online</option>
+                                    <option value="onsite">Onsite</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3" id="meetingLinkDiv">
+                                <label class="fw-bold">Meeting Link <span class="text-danger">*</span></label>
+                                <input type="url" class="form-control" id="meetingLink" placeholder="https://meet.google.com/xxx-xxxx-xxx">
+                                <small class="text-muted">Required for online interview</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold">Additional Notes</label>
+                                <textarea class="form-control" id="interviewNotes" rows="2" placeholder="Any additional instructions for the student..."></textarea>
+                            </div>
+
+                            <div class="d-flex gap-3">
+                                <button type="submit" class="btn-primary-custom" id="scheduleBtn">
+                                    <i class="fas fa-calendar-plus"></i> Schedule Interview
+                                </button>
+                                <a href="applications.html" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SUCCESS MODAL ==================== -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                    <h5 class="modal-title text-white"><i class="fas fa-check-circle me-2"></i>Interview Scheduled!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="fas fa-calendar-check fa-4x text-success mb-3"></i>
+                    <h5>Interview has been scheduled successfully!</h5>
+                    <p class="text-muted" id="successDetails">The student has been notified.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="applications.html" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Applications
+                    </a>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-building"></i> Company Dashboard
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="text-white-custom me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container mt-4">
+        <div id="alertContainer"></div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-calendar-check me-2"></i> Schedule Interview
+                    </div>
+                    <div class="card-body">
+
+                        <!-- ===== STUDENT INFO ===== -->
+                        <div class="student-info mb-4" id="studentInfo">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="label">Student Name</div>
+                                    <div class="value" id="studentName">Loading...</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="label">Roll Number</div>
+                                    <div class="value" id="studentRollNo">Loading...</div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="label">Internship</div>
+                                    <div class="value" id="internshipTitle">Loading...</div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="label">Status</div>
+                                    <div class="value"><span class="badge badge-shortlisted" id="studentStatus">SHORTLISTED</span></div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="applicationId">
+                        </div>
+
+                        <!-- ===== INTERVIEW FORM ===== -->
+                        <form id="interviewForm" onsubmit="return scheduleInterview(event)">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="fw-bold">Interview Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="interviewDate" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="fw-bold">Interview Time <span class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" id="interviewTime" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold">Interview Mode <span class="text-danger">*</span></label>
+                                <select class="form-select" id="interviewMode" onchange="toggleMeetingLink()" required>
+                                    <option value="online">Online</option>
+                                    <option value="onsite">Onsite</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3" id="meetingLinkDiv">
+                                <label class="fw-bold">Meeting Link <span class="text-danger">*</span></label>
+                                <input type="url" class="form-control" id="meetingLink" placeholder="https://meet.google.com/xxx-xxxx-xxx">
+                                <small class="text-muted">Required for online interview</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold">Additional Notes</label>
+                                <textarea class="form-control" id="interviewNotes" rows="2" placeholder="Any additional instructions for the student..."></textarea>
+                            </div>
+
+                            <div class="d-flex gap-3">
+                                <button type="submit" class="btn-primary-custom" id="scheduleBtn">
+                                    <i class="fas fa-calendar-plus"></i> Schedule Interview
+                                </button>
+                                <a href="applications.html" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SUCCESS MODAL ==================== -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                    <h5 class="modal-title text-white"><i class="fas fa-check-circle me-2"></i>Interview Scheduled!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="fas fa-calendar-check fa-4x text-success mb-3"></i>
+                    <h5>Interview has been scheduled successfully!</h5>
+                    <p class="text-muted" id="successDetails">The student has been notified.</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="applications.html" class="btn btn-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Applications
+                    </a>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+
+        // ==================== CHECK AUTH ====================
+        if (!token) {
+            window.location.href = '../login.html';
+        }
+
+        // ==================== LOGOUT ====================
+        document.getElementById('logoutBtn')?.addEventListener('click', function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../index.html';
+        });
+
+        // ==================== USER DATA ====================
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('userName').textContent = user.name || 'Company HR';
+
+        // ==================== GET APPLICATION DATA ====================
+        function getApplicationData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const applicationId = urlParams.get('id');
+
+            if (!applicationId) {
+                // If no ID is passed, fetch shortlisted students and show a dropdown
+                fetchShortlistedForDropdown();
+                return;
+            }
+
+            document.getElementById('applicationId').value = applicationId;
+            fetchApplicationDetails(applicationId);
+        }
+
+        async function fetchShortlistedForDropdown() {
+            try {
+                const response = await fetch(`${API_URL}/company/applications?status=shortlisted`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const applications = result.data.filter(a => a.status === 'shortlisted');
+                    
+                    if (applications.length === 0) {
+                        showAlert('No shortlisted students found to schedule interviews.', 'warning');
+                        document.getElementById('studentName').textContent = 'No shortlisted students';
+                        document.getElementById('studentRollNo').textContent = 'N/A';
+                        document.getElementById('internshipTitle').textContent = 'N/A';
+                        document.getElementById('studentStatus').textContent = 'N/A';
+                        document.getElementById('scheduleBtn').disabled = true;
+                        return;
+                    }
+
+                    // Create Dropdown
+                    let dropdownHtml = `
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-primary">Select Student to Interview *</label>
+                            <select class="form-select" id="applicationSelect" required onchange="updateSelectedStudent(this)">
+                                <option value="" disabled selected>-- Select a Shortlisted Student --</option>
+                    `;
+                    
+                    applications.forEach(app => {
+                        dropdownHtml += `<option value="${app.id}" data-roll="${app.studentRollNumber || 'N/A'}" data-internship="${app.internshipTitle || 'N/A'}">${app.studentName} (${app.internshipTitle})</option>`;
+                    });
+                    
+                    dropdownHtml += `</select></div>`;
+                    
+                    document.getElementById('studentInfo').innerHTML = dropdownHtml;
+                }
+            } catch (error) {
+                console.error('Error fetching applications:', error);
+                showAlert('Failed to load shortlisted students', 'danger');
+            }
+        }
+
+        function updateSelectedStudent(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            document.getElementById('applicationId').value = selectedOption.value;
+        }
+
+        async function fetchApplicationDetails(applicationId) {
+            try {
+                const response = await fetch(`${API_URL}/company/applications`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const app = result.data.find(a => a.id == applicationId);
+
+                    if (app) {
+                        document.getElementById('studentName').textContent = app.studentName || 'Unknown';
+                        document.getElementById('studentRollNo').textContent = app.studentRollNumber || 'N/A';
+                        document.getElementById('internshipTitle').textContent = app.internshipTitle || 'N/A';
+                        document.getElementById('studentStatus').textContent = (app.status || 'SHORTLISTED').toUpperCase();
+                    } else {
+                        showAlert('Application not found', 'danger');
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching application:', error);
+                showAlert('Failed to load application details', 'danger');
+            }
+        }
+
+        // ==================== TOGGLE MEETING LINK ====================
+        function toggleMeetingLink() {
+            const mode = document.getElementById('interviewMode').value;
+            const meetingLinkDiv = document.getElementById('meetingLinkDiv');
+            const meetingLink = document.getElementById('meetingLink');
+
+            if (mode === 'online') {
+                meetingLinkDiv.style.display = 'block';
+                meetingLink.required = true;
+            } else {
+                meetingLinkDiv.style.display = 'none';
+                meetingLink.required = false;
+                meetingLink.value = '';
+            }
+        }
+
+        // ==================== SHOW ALERT ====================
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+            `;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // ==================== SCHEDULE INTERVIEW ====================
+        async function scheduleInterview(event) {
+            event.preventDefault();
+
+            const applicationId = document.getElementById('applicationId').value;
+            const interviewDate = document.getElementById('interviewDate').value;
+            const interviewTime = document.getElementById('interviewTime').value;
+            const interviewMode = document.getElementById('interviewMode').value;
+            const meetingLink = document.getElementById('meetingLink').value.trim();
+            const notes = document.getElementById('interviewNotes').value.trim();
+
+            // ==================== VALIDATION ====================
+            if (!applicationId) {
+                showAlert('No application selected', 'warning');
+                return false;
+            }
+
+            if (!interviewDate) {
+                showAlert('Please select interview date', 'warning');
+                document.getElementById('interviewDate').focus();
+                return false;
+            }
+
+            if (!interviewTime) {
+                showAlert('Please select interview time', 'warning');
+                document.getElementById('interviewTime').focus();
+                return false;
+            }
+
+            // Check if date is in past
+            const selectedDate = new Date(interviewDate + 'T' + interviewTime);
+            if (selectedDate < new Date()) {
+                showAlert('Interview date and time cannot be in the past', 'warning');
+                return false;
+            }
+
+            if (interviewMode === 'online' && !meetingLink) {
+                showAlert('Meeting link is required for online interview', 'warning');
+                document.getElementById('meetingLink').focus();
+                return false;
+            }
+
+            // ==================== DISABLE BUTTON ====================
+            const btn = document.getElementById('scheduleBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Scheduling...';
+
+            // ==================== API CALL ====================
+            try {
+                const response = await fetch(`${API_URL}/company/interview`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        applicationId: parseInt(applicationId),
+                        interviewDate: interviewDate,
+                        interviewTime: interviewTime,
+                        interviewMode: interviewMode,
+                        meetingLink: meetingLink || null,
+                        notes: notes || null
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Show success modal
+                    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    
+                    let stuName = 'Student';
+                    const dropdown = document.getElementById('applicationSelect');
+                    if (dropdown) {
+                        stuName = dropdown.options[dropdown.selectedIndex].text.split('(')[0].trim();
+                    } else {
+                        stuName = document.getElementById('studentName').textContent;
+                    }
+
+                    document.getElementById('successDetails').innerHTML = `
+                        <strong>${stuName}</strong><br>
+                        Date: ${new Date(interviewDate).toLocaleDateString()}<br>
+                        Time: ${interviewTime}<br>
+                        Mode: ${interviewMode.toUpperCase()}
+                        ${meetingLink ? `<br>Link: <a href="${meetingLink}" target="_blank">${meetingLink}</a>` : ''}
+                    `;
+                    successModal.show();
+                } else {
+                    showAlert('❌ ' + (result.message || 'Failed to schedule interview'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error scheduling interview:', error);
+                showAlert('❌ Server error. Please try again.', 'danger');
+            }
+
+            // ==================== ENABLE BUTTON ====================
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-calendar-plus"></i> Schedule Interview';
+
+            return false;
+        }
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            getApplicationData();
+
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('interviewDate').value = tomorrow.toISOString().split('T')[0];
+        });
+    </script>
+
+</body>
+</html>
