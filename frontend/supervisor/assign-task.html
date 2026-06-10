@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Task</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html"><i class="fas fa-user-tie"></i> Supervisor Dashboard</a>
+            <div class="ms-auto">
+                <span class="text-white me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div id="alertContainer"></div>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-tasks"></i> Assign Task</h2>
+            <a href="students.html" class="btn btn-secondary">Back to Students</a>
+        </div>
+        <hr>
+
+        <div class="card max-w-600 mx-auto mt-4">
+            <div class="card-body">
+                <form id="assignTaskFormPage">
+                    <div class="mb-3">
+                        <label class="form-label">Select Student <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pageTaskStudentId" required>
+                            <option value="">Loading students...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Task Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="pageTaskTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="pageTaskDescription" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deadline <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="pageTaskDeadline" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Assign Task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/supervisor.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const user = getUser();
+            if (user) document.getElementById('userName').textContent = user.name;
+            
+            // Populate student dropdown
+            await populateStudentDropdown();
+
+            // Extract studentId from URL if present
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('studentId');
+            if (studentId) {
+                document.getElementById('pageTaskStudentId').value = studentId;
+            }
+
+            // Setup form submit
+            document.getElementById('assignTaskFormPage').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await submitTaskPage();
+            });
+        });
+
+        async function populateStudentDropdown() {
+            try {
+                const response = await fetch(`${API_URL}/supervisor/students`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+                const select = document.getElementById('pageTaskStudentId');
+                
+                if (result.success && result.data.length > 0) {
+                    select.innerHTML = '<option value="">Select a student</option>';
+                    result.data.forEach(student => {
+                        select.innerHTML += `<option value="${student.id}">${student.name} (${student.rollNumber})</option>`;
+                    });
+                } else {
+                    select.innerHTML = '<option value="">No students available</option>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('pageTaskStudentId').innerHTML = `<option value="">Error: ${error.message}</option>`;
+                showAlert(`Fetch error: ${error.message}`, 'danger');
+            }
+        }
+
+        async function submitTaskPage() {
+            const studentId = document.getElementById('pageTaskStudentId').value;
+            const title = document.getElementById('pageTaskTitle').value;
+            const description = document.getElementById('pageTaskDescription').value;
+            const deadline = document.getElementById('pageTaskDeadline').value;
+
+            if (!studentId || !title || !description || !deadline) {
+                showAlert('All fields are required', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/supervisor/task`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        studentId: parseInt(studentId),
+                        title,
+                        description,
+                        deadline
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Task assigned successfully!', 'success');
+                    document.getElementById('assignTaskFormPage').reset();
+                    setTimeout(() => {
+                        window.location.href = 'students.html';
+                    }, 2000);
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error assigning task:', error);
+                showAlert('Failed to assign task', 'danger');
+            }
+        }
+    </script>
+</body>
+</html>
