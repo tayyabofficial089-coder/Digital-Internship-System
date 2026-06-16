@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Progress</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html"><i class="fas fa-graduation-cap"></i> Student Dashboard</a>
+            <div class="ms-auto">
+                <span class="text-white me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div id="alertContainer"></div>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-chart-line"></i> Upload Learning Progress</h2>
+            <a href="tasks.html" class="btn btn-secondary">Back to Tasks</a>
+        </div>
+        <hr>
+
+        <div class="card max-w-600 mx-auto mt-4">
+            <div class="card-body">
+                <form id="progressFormPage">
+                    <input type="hidden" id="pageTaskId">
+                    <div class="mb-3">
+                        <label class="form-label">Week Number <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="pageWeekNumber" required min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="pageProgressTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">What I Learned / Description <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="pageProgressDescription" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Attach File (Optional, Max 20MB)</label>
+                        <input type="file" class="form-control" id="pageProgressFile" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                        <small class="text-muted">Allowed types: PDF, DOC, DOCX, JPG, JPEG, PNG</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit Progress</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/student.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = getUser();
+            if (user) document.getElementById('userName').textContent = user.name;
+            
+            // Extract taskId from URL if present
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('taskId');
+            if (taskId) {
+                document.getElementById('pageTaskId').value = taskId;
+            }
+
+            // Setup form submit
+            document.getElementById('progressFormPage').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await submitProgressPage();
+            });
+        });
+
+        async function submitProgressPage() {
+            const taskId = document.getElementById('pageTaskId').value;
+            const weekNumber = document.getElementById('pageWeekNumber').value;
+            const title = document.getElementById('pageProgressTitle').value;
+            const description = document.getElementById('pageProgressDescription').value;
+            const fileInput = document.getElementById('pageProgressFile');
+
+            if (!weekNumber || !title || !description) {
+                showAlert('Week number, title and description are required', 'warning');
+                return;
+            }
+
+            const formData = new FormData();
+            if (taskId) formData.append('taskId', taskId);
+            formData.append('weekNumber', weekNumber);
+            formData.append('title', title);
+            formData.append('description', description);
+            if (fileInput.files[0]) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/student/progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Learning progress uploaded successfully!', 'success');
+                    document.getElementById('progressFormPage').reset();
+                    setTimeout(() => {
+                        window.location.href = 'tasks.html';
+                    }, 2000);
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error uploading progress:', error);
+                showAlert('Failed to upload progress', 'danger');
+            }
+        }
+    </script>
+</body>
+</html>
