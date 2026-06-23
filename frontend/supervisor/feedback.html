@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback & Progress</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html"><i class="fas fa-user-tie"></i> Supervisor Dashboard</a>
+            <div class="ms-auto">
+                <span class="text-white me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div id="alertContainer"></div>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-comment"></i> Feedback & Progress</h2>
+            <a href="students.html" class="btn btn-secondary">Back to Students</a>
+        </div>
+        <hr>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">Select Student</div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush" id="studentSelectGroup">
+                            <div class="p-3 text-center text-muted">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header" id="progressHeader">Student Progress</div>
+                    <div class="card-body" id="progressContent">
+                        <div class="text-center text-muted p-4">Please select a student from the list to view their progress and provide feedback.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/supervisor.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const user = getUser();
+            if (user) document.getElementById('userName').textContent = user.name;
+            
+            await loadStudentListForFeedback();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentId = urlParams.get('studentId');
+            if (studentId) {
+                loadStudentProgressForFeedback(studentId);
+            }
+        });
+
+        async function loadStudentListForFeedback() {
+            try {
+                const response = await fetch(`${API_URL}/supervisor/students`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+                const container = document.getElementById('studentSelectGroup');
+                
+                if (result.success && result.data.length > 0) {
+                    container.innerHTML = '';
+                    result.data.forEach(student => {
+                        container.innerHTML += `
+                            <button class="list-group-item list-group-item-action" onclick="loadStudentProgressForFeedback(${student.id}, '${student.name}')">
+                                ${student.name} <small class="text-muted d-block">${student.rollNumber}</small>
+                            </button>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = '<div class="p-3 text-center text-muted">No students assigned.</div>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadStudentProgressForFeedback(studentId, studentName = 'Student') {
+            document.getElementById('progressHeader').textContent = `${studentName}'s Progress`;
+            document.getElementById('progressContent').innerHTML = '<div class="text-center p-4"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/supervisor/progress/${studentId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    let html = '';
+                    if (result.data.length === 0) {
+                        html = '<p class="text-muted text-center p-4">No progress uploaded yet by this student.</p>';
+                    } else {
+                        html += '<div class="list-group mb-4">';
+                        result.data.forEach(p => {
+                            html += `
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Week ${p.weekNumber}: ${p.title}</h6>
+                                        <small class="text-muted">${new Date(p.createdAt).toLocaleDateString()}</small>
+                                    </div>
+                                    <p class="mb-1 text-muted small">${p.description}</p>
+                                    ${p.filePath ? `<a href="http://localhost:5000/${p.filePath.replace(/\\/g, '/')}" target="_blank" class="btn btn-sm btn-outline-primary mt-2"><i class="fas fa-download"></i> View Attachment</a>` : ''}
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+
+                        // Add Feedback Form
+                        html += `
+                            <hr>
+                            <h5 class="mt-4">Provide Feedback</h5>
+                            <form id="feedbackFormPage" onsubmit="submitFeedbackPage(event, ${studentId})">
+                                <div class="mb-3">
+                                    <label class="form-label">Feedback</label>
+                                    <textarea class="form-control" id="pageFeedbackText" rows="3" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Rating (1-5)</label>
+                                    <input type="number" class="form-control" id="pageFeedbackRating" min="1" max="5" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Submit Feedback</button>
+                            </form>
+                        `;
+                    }
+                    document.getElementById('progressContent').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('progressContent').innerHTML = '<div class="alert alert-danger">Failed to load progress.</div>';
+            }
+        }
+
+        async function submitFeedbackPage(event, studentId) {
+            event.preventDefault();
+            const text = document.getElementById('pageFeedbackText').value;
+            const rating = document.getElementById('pageFeedbackRating').value;
+
+            try {
+                const response = await fetch(`${API_URL}/supervisor/feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        studentId: parseInt(studentId),
+                        feedbackText: text,
+                        rating: parseInt(rating)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Feedback submitted successfully!', 'success');
+                    document.getElementById('feedbackFormPage').reset();
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                showAlert('Failed to submit feedback', 'danger');
+            }
+        }
+    </script>
+</body>
+</html>
