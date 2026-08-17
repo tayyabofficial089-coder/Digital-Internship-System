@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Supervisor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background: #f0f2f5;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 18px 25px;
+            font-weight: 600;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74,108,247,0.4);
+            color: white;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 11px 15px;
+            height: 48px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #4A6CF7;
+            box-shadow: 0 0 0 4px rgba(74,108,247,0.12);
+        }
+        
+        .badge-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .badge-selected {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            box-shadow: 0 4px 20px rgba(74,108,247,0.3);
+            padding: 12px 0;
+        }
+        
+        .navbar-custom .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+        }
+        
+        .text-white-custom {
+            color: white !important;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            color: #d1d5db;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h5 {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+        
+        .empty-state p {
+            color: #6c757d;
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+        
+        .student-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .student-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .student-card .card-body {
+            padding: 20px;
+        }
+        
+        .student-card .student-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        
+        .student-card .student-detail {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 3px;
+        }
+        
+        .student-card .student-detail i {
+            width: 18px;
+            color: #4A6CF7;
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #4A6CF7, #6a8cfa);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-building"></i> Company Dashboard
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="text-white-custom me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container mt-4">
+        <div id="alertContainer"></div>
+
+        <!-- ===== HEADER ===== -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-user-tie text-primary"></i> Assign Supervisor</h2>
+                <p class="text-muted">Select a student and assign a supervisor</p>
+            </div>
+            <a href="applications.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Applications
+            </a>
+        </div>
+
+        <!-- ===== SELECTED STUDENTS LIST ===== -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-users me-2"></i> Selected Students (Waiting for Supervisor)
+            </div>
+            <div class="card-body">
+                <div id="studentsList">
+                    <div class="text-center py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+                        <p class="mt-2 text-muted">Loading students...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ASSIGN SUPERVISOR MODAL ==================== -->
+    <div class="modal fade" id="assignModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Assign Supervisor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="assignForm">
+                        <input type="hidden" id="assignApplicationId">
+                        <input type="hidden" id="assignStudentId">
+
+                        <div class="mb-3">
+                            <label class="fw-bold">Student</label>
+                            <p class="form-control-static" id="assignStudentName" style="font-weight:600; color:#1a1a2e;"></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="fw-bold">Select Supervisor <span class="text-danger">*</span></label>
+                            <select class="form-select" id="supervisorSelect" required>
+                                <option value="">-- Select Supervisor --</option>
+                            </select>
+                            <small class="text-muted">Only active supervisors are shown</small>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Supervisor will be able to view student's progress and assign tasks.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="assignBtn" onclick="assignSupervisor()">
+                        <i class="fas fa-check"></i> Assign Supervisor
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+
+        if (!token) window.location.href = '../login.html';
+
+        // ==================== LOGOUT ====================
+        document.getElementById('logoutBtn')?.addEventListener('click', function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../index.html';
+        });
+
+        // ==================== USER DATA ====================
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('userName').textContent = user.name || 'Company HR';
+
+        // ==================== SHOW ALERT ====================
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `${message} <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>`;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // ==================== LOAD STUDENTS ====================
+        async function loadStudents() {
+            try {
+                // Get selected students (status = 'selected')
+                const response = await fetch(`${API_URL}/company/applications?status=selected`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const applications = result.data;
+                    const container = document.getElementById('studentsList');
+
+                    // Load supervisors for dropdown
+                    await loadSupervisors();
+
+                    if (applications.length === 0) {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <h5>No Students Waiting for Supervisor</h5>
+                                <p>All selected students have been assigned supervisors.</p>
+                                <a href="applications.html" class="btn btn-primary">View All Applications</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    let html = '<div class="row">';
+                    applications.forEach(app => {
+                        // Check if student already has a supervisor
+                        const hasSupervisor = app.supervisorId ? true : false;
+
+                        html += `
+                            <div class="col-md-4 mb-3">
+                                <div class="card student-card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="student-name">${app.studentName || 'Student'}</div>
+                                                <div class="student-detail"><i class="fas fa-graduation-cap"></i> ${app.studentRollNumber || 'N/A'}</div>
+                                                <div class="student-detail"><i class="fas fa-star"></i> CGPA: ${app.studentCGPA || 'N/A'}</div>
+                                                <div class="student-detail"><i class="fas fa-briefcase"></i> ${app.internshipTitle || 'Internship'}</div>
+                                            </div>
+                                            <span class="badge badge-selected">SELECTED</span>
+                                        </div>
+                                        <hr>
+                                        ${hasSupervisor ? 
+                                            `<button class="btn btn-success w-100" disabled><i class="fas fa-check"></i> Supervisor Assigned</button>` :
+                                            `<button class="btn btn-primary-custom w-100" onclick="openAssignModal(${app.id}, ${app.studentId || 0}, '${app.studentName || 'Student'}')">
+                                                <i class="fas fa-user-tie"></i> Assign Supervisor
+                                            </button>`
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+                } else {
+                    showAlert(result.message || 'Failed to load students', 'danger');
+                }
+            } catch (error) {
+                console.error('Error loading students:', error);
+                showAlert('Server error. Please try again.', 'danger');
+            }
+        }
+
+        // ==================== LOAD SUPERVISORS ====================
+        async function loadSupervisors() {
+            try {
+                const response = await fetch(`${API_URL}/company/supervisors`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const select = document.getElementById('supervisorSelect');
+                    select.innerHTML = '<option value="">-- Select Supervisor --</option>';
+
+                    const supervisors = result.data;
+
+                    if (supervisors.length === 0) {
+                        select.innerHTML += '<option value="" disabled>❌ No supervisors found. Please add a supervisor first.</option>';
+                        return;
+                    }
+
+                    supervisors.forEach(sup => {
+                        select.innerHTML += `<option value="${sup.id}">${sup.name} - ${sup.designation || 'Supervisor'}</option>`;
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading supervisors:', error);
+                showAlert('Failed to load supervisors', 'danger');
+            }
+        }
+
+        // ==================== OPEN ASSIGN MODAL ====================
+        function openAssignModal(applicationId, studentId, studentName) {
+            document.getElementById('assignApplicationId').value = applicationId;
+            document.getElementById('assignStudentId').value = studentId;
+            document.getElementById('assignStudentName').textContent = studentName;
+
+            // Reload supervisors
+            loadSupervisors();
+
+            const modal = new bootstrap.Modal(document.getElementById('assignModal'));
+            modal.show();
+        }
+
+        // ==================== ASSIGN SUPERVISOR ====================
+        async function assignSupervisor() {
+            const applicationId = document.getElementById('assignApplicationId').value;
+            const studentId = document.getElementById('assignStudentId').value;
+            const supervisorId = document.getElementById('supervisorSelect').value;
+
+            if (!supervisorId) {
+                showAlert('Please select a supervisor', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('assignBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Assigning...';
+
+            try {
+                const response = await fetch(`${API_URL}/company/assign-supervisor`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        studentId: parseInt(studentId),
+                        supervisorId: parseInt(supervisorId)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('✅ Supervisor assigned successfully!', 'success');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('assignModal'));
+                    modal.hide();
+                    loadStudents();
+                } else {
+                    showAlert('❌ ' + (result.message || 'Failed to assign supervisor'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error assigning supervisor:', error);
+                showAlert('❌ Server error. Please try again.', 'danger');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check"></i> Assign Supervisor';
+        }
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStudents();
+        });
+    </script>
+
+</body>
+</html>
