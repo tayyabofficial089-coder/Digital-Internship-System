@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Completion</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html"><i class="fas fa-building"></i> Company Dashboard</a>
+            <div class="ms-auto">
+                <span class="text-white me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div id="alertContainer"></div>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-check-circle"></i> Confirm Completion</h2>
+            <a href="dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+        <hr>
+
+        <div class="card max-w-600 mx-auto mt-4">
+            <div class="card-body">
+                <form id="completionFormPage">
+                    <div class="mb-3">
+                        <label class="form-label">Select Student (Active Interns) <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pageCompletionStudentId" required>
+                            <option value="">Loading students...</option>
+                        </select>
+                        <small class="text-muted">Only active students currently assigned to a supervisor will appear here.</small>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-check"></i> Mark as Completed</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/company.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const user = getUser();
+            if (user) document.getElementById('userName').textContent = user.name;
+            
+            // Populate student dropdown
+            await loadActiveStudentsForCompletion();
+
+            // Setup form submit
+            document.getElementById('completionFormPage').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await submitCompletionPage();
+            });
+        });
+
+        async function loadActiveStudentsForCompletion() {
+            try {
+                // There isn't an explicit getActiveStudents API in companyController,
+                // but getSupervisors with their students is available, OR getApplications.
+                // We'll fetch applications and filter for selected/active.
+                const response = await fetch(`${API_URL}/company/applications`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+                const select = document.getElementById('pageCompletionStudentId');
+                
+                if (result.success && result.data.length > 0) {
+                    const activeApps = result.data.filter(app => app.status === 'selected' || app.status === 'active');
+                    if (activeApps.length > 0) {
+                        select.innerHTML = '<option value="">Select an active student</option>';
+                        activeApps.forEach(app => {
+                            select.innerHTML += `<option value="${app.studentId}">${app.studentName} (${app.internshipTitle})</option>`;
+                        });
+                    } else {
+                        select.innerHTML = '<option value="">No active students found</option>';
+                    }
+                } else {
+                    select.innerHTML = '<option value="">No students found</option>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function submitCompletionPage() {
+            const studentId = document.getElementById('pageCompletionStudentId').value;
+
+            if (!studentId) {
+                showAlert('Please select a student', 'warning');
+                return;
+            }
+
+            if(!confirm('Are you sure you want to mark this internship as completed? This action cannot be undone.')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/company/confirm-completion`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        studentId: parseInt(studentId)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Internship completion confirmed successfully!', 'success');
+                    document.getElementById('completionFormPage').reset();
+                    await loadActiveStudentsForCompletion(); // refresh list
+                } else {
+                    showAlert(result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error confirming completion:', error);
+                showAlert('Failed to confirm completion', 'danger');
+            }
+        }
+    </script>
+</body>
+</html>
