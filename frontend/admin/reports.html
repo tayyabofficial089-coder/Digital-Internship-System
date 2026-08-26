@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html"><i class="fas fa-user-shield"></i> Admin Dashboard</a>
+            <div class="ms-auto">
+                <span class="text-white me-3"><i class="fas fa-user"></i> <span id="userName"></span></span>
+                <button class="btn btn-light btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2><i class="fas fa-chart-bar"></i> Generate Reports</h2>
+        <hr>
+
+        <div class="row mb-4">
+            <div class="col-md-3"><button class="btn btn-primary w-100" onclick="generateReport('students')"><i class="fas fa-user-graduate"></i> Students</button></div>
+            <div class="col-md-3"><button class="btn btn-success w-100" onclick="generateReport('companies')"><i class="fas fa-building"></i> Companies</button></div>
+            <div class="col-md-3"><button class="btn btn-warning w-100" onclick="generateReport('internships')"><i class="fas fa-briefcase"></i> Internships</button></div>
+            <div class="col-md-3"><button class="btn btn-info w-100" onclick="generateReport('applications')"><i class="fas fa-file-alt"></i> Applications</button></div>
+        </div>
+
+        <div id="reportContent"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+
+        if (!token) window.location.href = '../login.html';
+
+        document.getElementById('logoutBtn')?.addEventListener('click', function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../index.html';
+        });
+
+        async function generateReport(type) {
+            document.getElementById('reportContent').innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Loading...</p></div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/reports/${type}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('reportContent').innerHTML = `
+                        <div class="card">
+                            <div class="card-header"><h4>${result.title}</h4></div>
+                            <div class="card-body">
+                                <p><small>Generated: ${new Date(result.generatedAt).toLocaleString()}</small></p>
+                                <pre class="bg-light p-3 rounded" style="white-space:pre-wrap;word-wrap:break-word;">${JSON.stringify(result.data, null, 2)}</pre>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('reportContent').innerHTML = '<div class="alert alert-danger">Error generating report</div>';
+            }
+        }
+
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('userName').textContent = user.name || 'Admin';
+    </script>
+</body>
+</html>
