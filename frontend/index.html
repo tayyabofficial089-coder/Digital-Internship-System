@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Internship System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap"></i> Digital Internship
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-primary" href="login.html" style="margin-right: 8px;"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="btn btn-outline-primary dropdown-toggle" href="#" id="registerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="registerDropdown">
+                            <li><a class="dropdown-item" href="student/register.html"><i class="fas fa-user-graduate"></i> As Student</a></li>
+                            <li><a class="dropdown-item" href="company/register.html"><i class="fas fa-building"></i> As Company HR</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section py-5 text-center">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-4">Digital Internship System</h1>
+            <p class="lead mb-5" style="max-width: 800px; margin: 0 auto;">A complete ecosystem to bridge the gap between students, institutions, and the industry. Streamline applications, evaluations, and progress tracking all in one seamless platform.</p>
+            
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5" style="background-color: var(--white);">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="fw-bold mb-4" style="color: var(--dark);">About This Digital Internship System</h2>
+                    <p class="text-muted lead mb-4">The Digital Internship System is a centralized hub designed to streamline the entire internship lifecycle. From student registration to final evaluation, we make it effortless for educational institutions and the industry to collaborate.</p>
+                    <p class="text-muted mb-4">Forget manual paperwork, disjointed emails, and lost evaluations. Our platform brings HRs, Company Supervisors, Students, and Admins under a single roof to ensure a transparent and structured learning experience.</p>
+                    <a href="#features" class="btn btn-outline-primary px-4 py-2 mt-2">Explore Features</a>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="p-4 bg-light rounded shadow-sm text-center">
+                                <h3 class="fw-bold text-primary mb-1">100%</h3>
+                                <p class="text-muted mb-0 small">Paperless</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-4 bg-light rounded shadow-sm text-center">
+                                <h3 class="fw-bold text-success mb-1">24/7</h3>
+                                <p class="text-muted mb-0 small">Access</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-4 bg-light rounded shadow-sm text-center">
+                                <h3 class="fw-bold text-info mb-1">4</h3>
+                                <p class="text-muted mb-0 small">User Roles</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-4 bg-light rounded shadow-sm text-center">
+                                <h3 class="fw-bold text-warning mb-1">Real-time</h3>
+                                <p class="text-muted mb-0 small">Tracking</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us / Features -->
+    <section id="features" class="py-5" style="background-color: var(--background);">
+        <div class="container py-5 text-center">
+            <h2 class="fw-bold mb-3" style="color: var(--dark);">Why Choose This System?</h2>
+            <p class="text-muted mb-5" style="max-width: 600px; margin: 0 auto;">We provide an intuitive, modern, and highly responsive interface packed with powerful features to make internship management a breeze.</p>
+            
+            <div class="row g-4 text-start">
+                <!-- Feature 1 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-3">
+                        <div class="card-body">
+                            <div class="mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: var(--primary-light);">
+                                <i class="fas fa-bolt text-primary fs-4"></i>
+                            </div>
+                            <h5 class="fw-bold">Streamlined Workflow</h5>
+                            <p class="text-muted mb-0">From application to final evaluation, every step is automated and meticulously tracked.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 2 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-3">
+                        <div class="card-body">
+                            <div class="mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: #d1fae5;">
+                                <i class="fas fa-chart-pie text-success fs-4"></i>
+                            </div>
+                            <h5 class="fw-bold">Real-time Progress</h5>
+                            <p class="text-muted mb-0">Students can submit weekly tasks and supervisors can provide instant, constructive feedback.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 3 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-3">
+                        <div class="card-body">
+                            <div class="mb-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: #fee2e2;">
+                                <i class="fas fa-shield-alt text-danger fs-4"></i>
+                            </div>
+                            <h5 class="fw-bold">Secure & Verified</h5>
+                            <p class="text-muted mb-0">Admin verifications ensure that only legitimate companies and students interact within the platform.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-5 pb-3 mt-auto">
+        <div class="container">
+            <div class="row mb-4">
+                <!-- Brand & About -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <h5 class="fw-bold text-white mb-4"><i class="fas fa-graduation-cap text-primary me-2"></i>Digital Internship</h5>
+                    <p class="text-white-50 small mb-4">A complete ecosystem to bridge the gap between students, institutions, and the industry. Streamlining the entire internship lifecycle digitally.</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h6 class="text-white fw-bold mb-4">Quick Links</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="#about" class="text-white-50 text-decoration-none">About System</a></li>
+                        <li class="mb-2"><a href="#features" class="text-white-50 text-decoration-none">Core Features</a></li>
+                        <li class="mb-2"><a href="student/register.html" class="text-white-50 text-decoration-none">Student Signup</a></li>
+                        <li class="mb-2"><a href="company/register.html" class="text-white-50 text-decoration-none">Company Signup</a></li>
+                    </ul>
+                </div>
+
+                <!-- Portals -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                    <h6 class="text-white fw-bold mb-4">Login Portals</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="student/login.html" class="text-white-50 text-decoration-none">Student Portal</a></li>
+                        <li class="mb-2"><a href="company/login.html" class="text-white-50 text-decoration-none">Company Portal</a></li>
+                        <li class="mb-2"><a href="supervisor/login.html" class="text-white-50 text-decoration-none">Supervisor Portal</a></li>
+                        <li class="mb-2"><a href="admin/login.html" class="text-white-50 text-decoration-none">Admin Portal</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-lg-4 col-md-6">
+                    <h6 class="text-white fw-bold mb-4">Contact Us</h6>
+                    <ul class="list-unstyled mb-0 text-white-50 small">
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-map-marker-alt text-primary mt-1 me-3"></i>
+                            <span>Govt. Graduate College, Civil Lines<br>Sheikhupura, Pakistan</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-phone-alt text-primary me-3"></i>
+                            <span>+92 314 7078357</span>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="fas fa-envelope text-primary me-3"></i>
+                            <span>tayyabofficial089@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="border-secondary mb-3 opacity-25">
+            
+            <!-- Copyright -->
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="text-white-50 small mb-0">&copy; 2026 Digital Internship System. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+                    <a href="#" class="text-white-50 small text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-white-50 small text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
