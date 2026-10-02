@@ -1,7 +1,7 @@
 // ==================== STUDENT JAVASCRIPT ====================
 
 // ==================== API BASE ====================
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://digital-internship-backend.onrender.com/api';
 const token = localStorage.getItem('token');
 
 // ==================== CHECK AUTH ====================
