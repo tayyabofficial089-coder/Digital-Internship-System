@@ -185,8 +185,11 @@
             try {
                 // User Info
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
-                document.getElementById('userName').textContent = user.name || 'Company HR';
-                document.getElementById('companyName').textContent = user.profile?.companyName || user.name || 'Company';
+                const userNameEl = document.getElementById('userName');
+                if (userNameEl) userNameEl.textContent = user.name || 'Company HR';
+                
+                const companyNameEl = document.getElementById('companyName');
+                if (companyNameEl) companyNameEl.textContent = user.profile?.companyName || user.name || 'Company';
 
                 // Get Applications & Internships
                 const appRes = await fetch(`${API_URL}/company/applications`, {
@@ -200,7 +203,11 @@
                         const selected = appResult.data?.filter(a => a.status === 'selected').length || 0;
                         document.getElementById('selectedStudents').textContent = selected;
                         document.getElementById('totalInternships').textContent = appResult.internships?.length || 0;
+                    } else {
+                        showAlert(appResult.message || 'Error loading applications', 'danger');
                     }
+                } else {
+                    showAlert('Server returned an error fetching stats.', 'danger');
                 }
 
                 // Get Supervisors
@@ -217,6 +224,7 @@
 
             } catch (error) {
                 console.error('Error loading dashboard:', error);
+                showAlert('Could not connect to backend server. Make sure it is running on localhost:5000.', 'danger');
             }
         }
 

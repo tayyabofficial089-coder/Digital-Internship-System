@@ -101,7 +101,7 @@ const viewApplications = async (req, res) => {
         // Get company internships for filter
         const internships = await Internship.findAll({
             where: { companyHRId: company.id },
-            attributes: ['id', 'title']
+            
         });
 
         return res.status(200).json({

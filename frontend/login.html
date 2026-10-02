@@ -79,7 +79,15 @@
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                showAlert('Server error. Please try again.', 'danger');
+                
+                let errorMsg = error.message || 'Unknown error';
+                if (window.location.protocol === 'file:') {
+                    errorMsg = "You cannot open this file directly. Please use http://localhost:5000/login.html";
+                } else if (window.location.port && window.location.port !== '5000') {
+                    errorMsg = "You are using the wrong port. Please use http://localhost:5000/login.html";
+                }
+                
+                showAlert(`Server error. Please try again. (${errorMsg})`, 'danger');
             }
 
             return false;
