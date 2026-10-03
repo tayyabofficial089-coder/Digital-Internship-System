@@ -364,6 +364,46 @@ const getInterviewDetails = async (req, res) => {
     }
 };
 
+// ==================== GET MY ASSIGNED SUPERVISOR ====================
+const getMySupervisor = async (req, res) => {
+    try {
+        const student = await Student.findOne({ where: { userId: req.user.id } });
+        if (!student) {
+            return res.status(404).json({ success: false, message: 'Student profile not found' });
+        }
+
+        if (!student.supervisorId) {
+            return res.json({ success: true, data: null, message: 'No supervisor assigned yet' });
+        }
+
+        const supervisor = await Supervisor.findByPk(student.supervisorId, {
+            include: [
+                { model: User, attributes: ['name', 'email'] },
+                { model: CompanyHR, attributes: ['companyName'] }
+            ]
+        });
+
+        if (!supervisor) {
+            return res.json({ success: true, data: null, message: 'No supervisor assigned yet' });
+        }
+
+        res.json({
+            success: true,
+            data: {
+                name: supervisor.User?.name || '',
+                email: supervisor.User?.email || '',
+                designation: supervisor.designation || '',
+                department: supervisor.department || '',
+                phone: supervisor.phone || '',
+                companyName: supervisor.CompanyHR?.companyName || ''
+            }
+        });
+    } catch (error) {
+        console.error('Get supervisor error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
 module.exports = {
     viewInternships,
     applyForInternship,
@@ -371,5 +411,6 @@ module.exports = {
     viewTasks,
     uploadProgress,
     viewFeedback,
-    getInterviewDetails
+    getInterviewDetails,
+    getMySupervisor
 };

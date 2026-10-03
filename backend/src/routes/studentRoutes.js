@@ -35,4 +35,7 @@ router.post('/progress',
 // View Feedback
 router.get('/feedback', studentController.viewFeedback);
 
+// View assigned supervisor
+router.get('/supervisor', studentController.getMySupervisor);
+
 module.exports = router;
