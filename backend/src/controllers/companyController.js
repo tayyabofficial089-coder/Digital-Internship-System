@@ -400,6 +400,18 @@ const confirmCompletion = async (req, res) => {
         // Update student status
         await student.update({ internshipStatus: 'completed' });
 
+        // Update corresponding application status to completed
+        const application = await Application.findOne({
+            where: {
+                studentId: student.id,
+                status: 'selected'
+            }
+        });
+        
+        if (application) {
+            await application.update({ status: 'completed' });
+        }
+
         // Update internship status to completed if all positions filled
         // (Simplified - in real scenario, check all students)
 
