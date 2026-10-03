@@ -183,22 +183,22 @@ const login = async (req, res) => {
             case 'student':
                 const student = await Student.findOne({ where: { userId: user.id } });
                 profile = student ? student.toJSON() : {};
-                redirectUrl = 'http://localhost:5000/student/dashboard.html';
+                redirectUrl = '/student/dashboard.html';
                 break;
             case 'company_hr':
                 const company = await CompanyHR.findOne({ where: { userId: user.id } });
                 profile = company ? company.toJSON() : {};
-                redirectUrl = 'http://localhost:5000/company/dashboard.html';
+                redirectUrl = '/company/dashboard.html';
                 break;
             case 'supervisor':
                 const supervisor = await Supervisor.findOne({ where: { userId: user.id } });
                 profile = supervisor ? supervisor.toJSON() : {};
-                redirectUrl = 'http://localhost:5000/supervisor/dashboard.html';
+                redirectUrl = '/supervisor/dashboard.html';
                 break;
             case 'admin':
                 const admin = await Admin.findOne({ where: { userId: user.id } });
                 profile = admin ? admin.toJSON() : {};
-                redirectUrl = 'http://localhost:5000/admin/dashboard.html';
+                redirectUrl = '/admin/dashboard.html';
                 break;
         }
 
